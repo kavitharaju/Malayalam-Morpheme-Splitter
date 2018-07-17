@@ -18,15 +18,16 @@ for letter in text:
 	if letter in uniCode:
 		word = word + letter
 	else:
-		print word+"---->"
+		print (word+"---->")
 		if word != "":
 			analysed_word = morphAnal(word)
-			for anal_word in analysed_word:
-				print anal_word
-				out.write(anal_word+' ')
+			# for anal_word in analysed_word:
+			# 	print (anal_word)
+			# 	out.write(anal_word+' ')
+			out.write(analysed_word[0])
 			word = ""
 			out.write(letter)
 		else:
-			print letter
+			print (letter)
 			out.write(letter)
 out.close()
