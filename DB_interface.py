@@ -9,6 +9,7 @@ import re
 import sys
 
 from morph_examples import examples
+from malayalam_words import root_word_lookup
 	
 def readAllExamples():
 	out=codecs.open('../output.txt',mode='w',encoding='utf-8')
@@ -50,9 +51,12 @@ def morphAnal(root):
 	analysed_word=[]
 	while(root!=wrd):
 		wrd=root
-		temp=findMorph(wrd)
-		root=temp[0]
-		analysed_word=[temp[1]]+analysed_word
+		if wrd in root_word_lookup:
+			root = wrd
+		else:
+			temp=findMorph(wrd)
+			root=temp[0]
+			analysed_word=[temp[1]]+analysed_word
 	return [root]+analysed_word
 
 
