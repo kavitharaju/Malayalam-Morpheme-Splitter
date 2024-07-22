@@ -1,173 +1,131 @@
-#!/usr/bin/python
-#filename:DB_interface.py
+#!/usr/bin/env python3
+# filename: db_interface.py
 
-######To manage the database for morph-analyser########
-
-import codecs
 import os
 import re
 import sys
-
 from morph_examples import examples
 from malayalam_words import root_word_lookup
-	
-def readAllExamples():
-	out=codecs.open('../output.txt',mode='w',encoding='utf-8')
-	sort_list=list(examples.keys())
-	# sort_list.sort()
-	for ex in sort_list:
-		out.write(ex+'\t')
-		for i in examples[ex]:
-			out.write(i+'  ')
-		out.write('\n')
-	out.close()
-	
-def findMorph(word):
-	suffixes=[]
-	analysed_word=''
-	if word=='':
-		return [word,'']
-	for w in examples:
-		if re.match('.*'+word+'$',w):
-			suffix=examples[w][1]
-			index=(len(w)-len(word))
-			word=examples[w][0][index:]
-			if suffix=='-':
-				return [word,'']
-			else:
-				return [word,suffix]
-	pre_part=''
-	if(len(word)>1):
-		pre_part=pre_part+word[0]
-		word=word[1:]
-		morph_list=findMorph(word)
-		return [pre_part+morph_list[0]]+morph_list[1:]
-	else:
-		return [word,'']	
-	out.close()
 
-def morphAnal(root):
-	wrd=''
-	analysed_word=[]
-	while(root!=wrd):
-		wrd=root
-		if wrd in root_word_lookup:
-			root = wrd
-		else:
-			temp=findMorph(wrd)
-			root=temp[0]
-			analysed_word=[temp[1]]+analysed_word
-	return [root]+analysed_word
+def read_all_examples():
+    with open('output.txt', mode='w', encoding='utf-8') as out:
+        sort_list = list(examples.keys())
+        for ex in sorted(sort_list):
+            out.write(ex + '\t')
+            out.write(' '.join(examples[ex]) + '\n')
 
+def find_morph(word):
+    if not word:
+        return [word, '']
 
+    for w in examples:
+        if re.match(f'.*{word}$', w):
+            suffix = examples[w][1]
+            index = len(w) - len(word)
+            word = examples[w][0][index:]
+            if suffix == '-':
+                return [word, ""]
+            return [word, suffix]
 
-	
-def dbEntry():
-	inp=codecs.open('input.txt',encoding='utf-8',mode='w')
-	inp.write('*'*25+'Enter the inputs here'+'*'*25+'\n(Format:<full word><tab><root><space><suffix>)\n')
-	inp.close()
-	os.system('gedit input.txt')
-	input('Enter the examples in the text file, and save it.')
-	inp=codecs.open('input.txt',encoding='utf-8',mode='r')
-	db=codecs.open('morph_examples.py',mode='a',encoding='utf-8')
-	from uniCodeMap import uniCode
-	# inp.readline()
-	# inp.readline()
-	ln=inp.readline()
-	print("read: "+ln)
-	while(ln!=''):
-		word=ln.split('\t')[0]
-		new_answer = ln.split('\t')[1][:-1].split(' ')
-		new_answer = [new_answer[0]] + [''] + new_answer[1:]
-		analysed_word=morphAnal(word)
-		print(analysed_word)
-		if(new_answer == analysed_word):
-			print( "This entry("+word+") would create redundancy")
-			ln=inp.readline()
-			
-		else:
-			new_ln='examples[u\''
-			for char in ln:
-				if char in uniCode:
-					new_ln=new_ln+uniCode[char]
-				elif char=='\t':
-					new_ln=new_ln+"\']=[u\'"
-				elif char==' ':
-					new_ln=new_ln+'\',u\''
-				elif char==u'\u200d':
-					new_ln=new_ln+'\\u200d'
-				elif char=='\n':
-					pass
-				else:
-					new_ln=new_ln+char			##Error message
+    if len(word) > 1:
+        pre_part = word[0]
+        word = word[1:]
+        morph_list = find_morph(word)
+        return [pre_part + morph_list[0]] + morph_list[1:]
+    return [word, '*']
 
-			new_ln=new_ln+'\']\n'				
-			db.write(new_ln)
-		ln=inp.readline()
-	inp.close()
-	db.close()
-	
-	
-		
+def morph_anal(root):
+    wrd = ''
+    analysed_word = []
+    while root != wrd:
+        wrd = root
+        if wrd in root_word_lookup:
+            root = wrd
+        else:
+            temp = find_morph(wrd)
+            root = temp[0]
+            analysed_word = [temp[1]] + analysed_word
+    return [root] + analysed_word
 
+def file_open(filename):
+    os.system(f'notepad {filename}' if os.name == 'nt' else f'gedit {filename}')
+
+def db_entry():
+    with open('input.txt', 'w', encoding='utf-8') as inp:
+        inp.write('*' * 25 + 'Enter the inputs here' + '*' * 25 + '\n(Format:<full word><tab><root><space><suffix>)\n')
+    input('Enter the examples in the text file, and save it.')
+    file_open('input.txt')
+    
+    with open('input.txt', 'r', encoding='utf-8') as inp:
+        for ln in inp:
+            word = ln.split('\t')[0]
+            try:
+                new_answer = ln.split('\t')[1].strip().split(' ')
+            except Exception as e:
+                print(f"Error parsing {ln}: {e}")
+                pass
+            analysed_word = morph_anal(word)
+            if new_answer == analysed_word and word in examples:
+                print(f"This entry ({word}) would create redundancy")
+            else:
+                examples[word] = new_answer
+                try:
+                    with open('morph_examples.py', 'w', encoding='utf-8') as db:
+                        db.write("examples = {")
+                        for k, v in examples.items():
+                            db.write(f"'{k}' : {v},\n")
+                        db.write("}")
+                        print(f"Word{word} -> {new_answer} has been successfully added!")
+                except:
+                    pass
+
+def _do_choice1():
+    read_all_examples()
+    file_open('output.txt')
+
+def _do_choice2():
+    input('Enter the word(with suffixes) in the file and save it.')
+    file_open('input.txt')
+    with open('input.txt', 'r', encoding='utf-8') as inp:
+        actual_words = inp.readlines()
+    analysed_words = []
+    for actual_word in actual_words:
+        actual_word = actual_word.strip()
+        if actual_word != "":
+            analysed_words.append([actual_word, morph_anal(actual_word)])
+    with open('output.txt', 'w', encoding='utf-8') as out:
+        for analyzed_word in analysed_words:
+            out.write(analyzed_word[0] +  "→"  + ' '.join(analyzed_word[1]) + '\n')
+    file_open('output.txt')
+    
 def normal_exec():
-	choice=0
-	print ("What do you want?\n\t1.View the whole database\n"+
-		"\t2.Check the morph-segmentation for an entry\n"+
-		"\t3.Add examples to DB\n\t4.Exit the program\n")
-	  
-	while choice!=4:
-		choice=int(input("Enter choice: "))
-		if choice==1:
-			readAllExamples()	
-			os.system('gedit ../output.txt')
-		elif choice==2:
-			input('Enter the word(with suffixes) in the file and save it.')
-			os.system('gedit input.txt')
-			word=codecs.open('input.txt',mode='r',encoding='utf-8').read()
-			actual_word=word[:-1]
-			analysed_word=morphAnal(actual_word)
-			out=codecs.open('../output.txt',mode='w',encoding='utf-8')
-			#print actual_word,'\t',analysed_word
-			out.write(actual_word+'\t')
-			for i in analysed_word[:]:
-				out.write(i+' ')
-			out.write('\n')
-			out.close()
-			os.system('gedit ../output.txt')
-		elif choice==3:
-			dbEntry()
-		elif choice==4:
-			pass
-		else:
-			print ("Hey! What does that mean?!") 
-			print ("Select a number from below\n\t1.View the whole database\n\t2.Check the database for an entry\n\t3.Add examples to DB\n\t4.Exit the program\n")
-	
-		
-if __name__ == "__main__":
-	if(len(sys.argv)>1):
-		choice = sys.argv[1]
-		if choice=='1':
-			readAllExamples()	
-			os.system('gedit ../output.txt')
-		elif choice=='2':
-			input('Enter the word(with suffixes) in the file and save it.')
-			os.system('gedit ../input.txt')
-			word=codecs.open('../input.txt',mode='r',encoding='utf-8').read()
-			actual_word=word[:-1]
-			analysed_word=morphAnal(actual_word)
-			out=codecs.open('../output.txt',mode='w',encoding='utf-8')
-			#print actual_word,'\t',analysed_word
-			out.write(actual_word+'\t')
-			for i in analysed_word[:]:
-				out.write(i+' ')
-			out.write('\n')
-			out.close()
-			os.system('gedit ../output.txt')
-		elif choice=='3':
-			dbEntry()
-		else:
-			print ("Hey! What does that mean?!" )
-	else:
-		normal_exec()
+    choice = 0
+    print("What do you want?\n\t1. View the whole database\n\t2. Check the morph-segmentation for an entry\n\t3. Add examples to DB\n\t4. Exit the program\n")
+    
+    while choice != 4:
+        choice = int(input("Enter choice: "))
+        if choice == 1:
+            _do_choice1()
+        elif choice == 2:
+            _do_choice2()
+        elif choice == 3:
+            db_entry()
+        elif choice == 4:
+            pass
+        else:
+            print("Hey! What does that mean?!")
+            print("Select a number from below\n\t1. View the whole database\n\t2. Check the morph-segmentation for an entry\n\t3. Add examples to DB\n\t4. Exit the program\n")
 
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        choice = sys.argv[1]
+        if choice == '1':
+            _do_choice1()
+        elif choice == '2':
+            _do_choice2()
+        elif choice == '3':
+            db_entry()
+        else:
+            print("Hey! What does that mean?!")
+    else:
+        normal_exec()
