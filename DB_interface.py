@@ -1,22 +1,32 @@
+import json
 import re
 from morph_examples import examples
 from malayalam_words import root_word_lookup
 
 
+def load_config_file():
+    with open("config.json", 'r', encoding='utf-8') as f:
+        user_data = json.load(f)
+    return user_data
+
+
 def read_all_examples():
-    return examples
+    user_data = load_config_file()
+    user_data.update(examples)
+    return user_data
 
 
 
 def find_morph(word):
+    user_data = load_config_file()
     if not word:
         return [word, '']
 
-    for w in examples:
+    for w in user_data:
         if re.match(f'.*{word}$', w):
-            suffix = examples[w][1]
+            suffix = user_data[w][1]
             index = len(w) - len(word)
-            word = examples[w][0][index:]
+            word = user_data[w][0][index:]
             if suffix == '-':
                 return [word, ""]
             return [word, suffix]
@@ -47,21 +57,17 @@ def morph_anal(root):
 
 
 def db_entry(inp):
+    user_data = load_config_file()
     for word, new_answer in inp.items():
         analysed_word = find_morph(word)
-        if new_answer == analysed_word and word in examples:
+        existing_words = list(user_data.keys())
+        if new_answer == analysed_word and (word in examples or word in existing_words):
             print(f"This entry ({word}) would create redundancy")
         else:
-            examples[word] = new_answer
-            try:
-                with open('morph_examples.py', 'w', encoding='utf-8') as db:
-                    db.write("examples = {")
-                    for k, v in examples.items():
-                        db.write(f"'{k}' : {v},\n")
-                    db.write("}")
-                    print(f"Word{word} -> {new_answer} has been successfully added!")
-            except:
-                pass
+            user_data[word] = new_answer
+            with open('config.json', 'w', encoding= 'utf-8') as f:
+                json.dump(user_data, f, indent=4, ensure_ascii=False)
+                print(f"Data saved to config.json")
 
 
 
