@@ -1,0 +1,3 @@
+[submodule "malayalam_morpheme_splitter"]
+	path = malayalam_morpheme_splitter
+	url = https://github.com/glad-e/Malayalam-Morpheme-Splitter
