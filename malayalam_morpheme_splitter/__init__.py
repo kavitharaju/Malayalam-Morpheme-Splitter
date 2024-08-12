@@ -1,0 +1,1 @@
+from malayalam_morpheme_splitter.DB_interface import *
