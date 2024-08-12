@@ -18,5 +18,5 @@ def main():
     shutil.copy2(data_file_1, destinationfile_1)
     shutil.copy2(data_file_2, destinationfile_2)
 
-    print(f'morph_examples.py has been installed to {destination_file_1}')
-    print(f'malayalam_words.py has been installed to {destination_file_2}')
+    print(f'morph_examples.py has been installed to {destinationfile_1}')
+    print(f'malayalam_words.py has been installed to {destinationfile_2}')
