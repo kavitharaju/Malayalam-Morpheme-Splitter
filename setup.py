@@ -28,4 +28,4 @@ setup(
      project_urls={
            'Source Repository': 'https://github.com/kavitharaju/Malayalam-Morpheme-Splitter' 
     }
-)
+    )

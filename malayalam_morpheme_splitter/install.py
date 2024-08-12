@@ -11,12 +11,12 @@ def main():
     data_file_2 = pkg_resources.resource_filename('malayalam_morpheme_splitter', 'data/malayalam_words.py')
 
   
-    destination_file_1 = os.path.join(target_dir, 'morph_examples.py')
-    destination_file_2 = os.path.join(target_dir, 'malayalam_words.py')
+    destinationfile_1 = os.path.join(target_dir, 'morph_examples.py')
+    destinationfile_2 = os.path.join(target_dir, 'malayalam_words.py')
 
    
-    shutil.copy2(data_file_1, destination_file_1)
-    shutil.copy2(data_file_2, destination_file_2)
+    shutil.copy2(data_file_1, destinationfile_1)
+    shutil.copy2(data_file_2, destinationfile_2)
 
     print(f'morph_examples.py has been installed to {destination_file_1}')
     print(f'malayalam_words.py has been installed to {destination_file_2}')
