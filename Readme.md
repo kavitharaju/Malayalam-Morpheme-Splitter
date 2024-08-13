@@ -15,12 +15,14 @@ To install malayalam_morpheme_splitter, you can use pip:
 ```python
 import malayalam_morpheme_splitter as mms
 
-word_list = mms.morph_analysis('അമ്മച്ചിയുടെ') # ['അമ്മച്ചി', 'ഉടെ']
-word_list1 = mms.morph_analysis('a sentence') # output
+word_list = mms.morph_analysis('കരുതലിൻ്റെ') # ['കരുതൽ', 'ഇൻ്റെ']
+word_list1 = mms.morph_analysis('ആനയെ കാണാൻ വനത്തിലേക്ക് പോവുക') # [['ആന', 'എ'], ['കാണാൻ'], ['വനത്തിൽ', 'ഏക്ക്'], ['പോവുക']]
 
 mms.read_all_examples() # returns all the examples in the database
 
-mms.db_entry({'കരുതലിൻ്റെ':['കരുതൽ', 'ഇൻ്റെ']}) # add a new root to DB
+mms.db_entry({'കരുതലിൻ്റെ':['കരുതൽ', 'ഇൻ്റെ']}) # add a new entry to DB
+
+mms.root_word_entry('കുട്ടികൾ') # add a new root word to DB
 ```
 
 ## Functions
@@ -30,6 +32,7 @@ morph_analysis(word) : This function takes a string as input and returns a dicti
 
 db_entry(inp) : This function takes a dictionary as input and adds it to the DB.
 
+root_word_entry(word) : This function take a string as input and adds it to DB.
 
 
 
