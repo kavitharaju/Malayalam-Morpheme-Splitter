@@ -1,6 +1,6 @@
 import re
-from malayalam_morpheme_splitter.data.morph_examples import examples
-from malayalam_morpheme_splitter.data.malayalam_words import root_word_lookup
+from data.morph_examples import examples
+from data.malayalam_words import root_word_lookup
 
 
 
@@ -34,7 +34,7 @@ def morph_analysis(word):
     analysis = []
     for wrd in word:
         if wrd == '':
-            print("The given input is empty")
+            return False
         else:
             if wrd in root_word_lookup:
                 wrd_analysis = [wrd]
@@ -51,18 +51,33 @@ def db_entry(inp):
     for word, new_answer in inp.items():
         analysed_word = find_morph(word)
         if new_answer == analysed_word and word in examples:
-            print(f"This entry ({word}) would create redundancy")
-        else:
-            examples[word] = new_answer
-            try:
-                with open('morph_examples.py', 'w', encoding='utf-8') as db:
-                    db.write("examples = {")
-                    for k, v in examples.items():
-                        db.write(f"'{k}' : {v},\n")
-                    db.write("}")
-                    print(f"Word{word} -> {new_answer} has been successfully added!")
-            except:
-                pass
+            return False
+        examples[word] = new_answer
+        try:
+            with open('data/morph_examples.py', 'w', encoding = 'utf-8') as db:
+                db.write("examples = {")
+                for k, v in examples.items():
+                    db.write(f"'{k}' : {v},\n")
+                db.write("}")
+                return True
+        except: 
+            pass
+
+
+
+def root_word_entry(word):
+    if word in root_word_lookup:
+        return False
+    root_word_lookup.append(word)
+    try:
+        with open('data/malayalam_words.py', 'w', encoding = 'utf-8') as f:
+            f.write("root_word_lookup = [")
+            for wrd in root_word_lookup:
+                f.write(f'"{wrd}",\n')
+            f.write("]")
+        return True
+    except:
+        return False
 
 
 
