@@ -22,13 +22,13 @@ mms.read_all_examples() # returns all the examples in the database
 
 mms.db_entry({'കരുതലിൻ്റെ':['കരുതൽ', 'ഇൻ്റെ']}) # add a new entry to DB
 
-mms.root_word_entry('കുട്ടികൾ') # add a new root word to DB
+mms.root_word_entry('നികൃഷ്ടം') # add a new root word to DB
 ```
 
 ## Functions
 read_all_examples() : Reads all the examples from the DB and returns them as a dictionary.
 
-morph_analysis(word) : This function takes a string as input and returns a dictionary. Key in the dictionary would be the word from the input string, and its corresponding value would be a list of all possible segmentations of that word.
+morph_analysis(word) : This function takes a string as input and returns a list containing segmentations.
 
 db_entry(inp) : This function takes a dictionary as input and adds it to the DB.
 
