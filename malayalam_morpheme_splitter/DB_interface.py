@@ -25,16 +25,16 @@ def find_morph(word):
         word = word[1:]
         morph_list = find_morph(word)
         return [pre_part + morph_list[0]] + morph_list[1:]
-    return [word, '*']
+    return [word]
 
 
 
 def morph_analysis(word):
-    word = re.findall(r'[\u0080-\uFFFF\w]+', word)
+    word = re.findall(r'[\u0080-\uFFFF]+|\w+', word)
     analysis = []
     for wrd in word:
         if wrd == '':
-            return False
+            pass
         else:
             if wrd in root_word_lookup:
                 wrd_analysis = [wrd]
@@ -51,15 +51,13 @@ def db_entry(inp):
     for word, new_answer in inp.items():
         analysed_word = find_morph(word)
         if new_answer == analysed_word and word in examples:
-            return False
+            raise ValueError(f'This entry would create redundancy')
         examples[word] = new_answer
         try:
-            with open('data/morph_examples.py', 'w', encoding = 'utf-8') as db:
-                db.write("examples = {")
+            with open('data/morph_examples.py', 'a', encoding = 'utf-8') as db:
                 for k, v in examples.items():
-                    db.write(f"'{k}' : {v},\n")
-                db.write("}")
-                return True
+                    db.append(f"'{k}' : {v},\n")
+                db.append("}")
         except: 
             pass
 
@@ -67,7 +65,7 @@ def db_entry(inp):
 
 def root_word_entry(word):
     if word in root_word_lookup:
-        return False
+        raise ValueError(f'This entry would create redundancy')
     root_word_lookup.append(word)
     try:
         with open('data/malayalam_words.py', 'w', encoding = 'utf-8') as f:
@@ -75,9 +73,8 @@ def root_word_entry(word):
             for wrd in root_word_lookup:
                 f.write(f'"{wrd}",\n')
             f.write("]")
-        return True
     except:
-        return False
+        pass
 
 
 
