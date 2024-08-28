@@ -1,4 +1,5 @@
 import re
+import os
 from data.morph_examples import examples
 from data.malayalam_words import root_word_lookup
 
@@ -51,28 +52,41 @@ def db_entry(inp):
     for word, new_answer in inp.items():
         analysed_word = find_morph(word)
         if new_answer == analysed_word and word in examples:
-            raise ValueError(f'This entry would create redundancy')
+            raise ValueError('This entry would create redundancy')
         examples[word] = new_answer
         try:
-            with open('data/morph_examples.py', 'a', encoding = 'utf-8') as db:
-                for k, v in examples.items():
-                    db.append(f"'{k}' : {v},\n")
-                db.append("}")
-        except: 
+            with open('data/morph_examples.py', 'r+', encoding='utf-8') as db:
+                db.seek(0, os.SEEK_END)
+                pos = db.tell()  
+                while pos > 0:
+                    pos -= 1
+                    db.seek(pos, os.SEEK_SET)
+                    if db.read(1) == '}':
+                        break
+                db.seek(pos - 1, os.SEEK_SET)
+                for word, new_answer in inp.items():
+                    db.write(f"'{word}' : {new_answer},")
+                db.write("\n}")
+        except:
             pass
 
 
 
 def root_word_entry(word):
     if word in root_word_lookup:
-        raise ValueError(f'This entry would create redundancy')
+        raise ValueError('This entry would create redundancy')
     root_word_lookup.append(word)
     try:
-        with open('data/malayalam_words.py', 'w', encoding = 'utf-8') as f:
-            f.write("root_word_lookup = [")
-            for wrd in root_word_lookup:
-                f.write(f'"{wrd}",\n')
-            f.write("]")
+        with open('data/malayalam_words.py', 'r+', encoding='utf-8') as f:
+            f.seek(0, os.SEEK_END)
+            pos = f.tell()
+            while pos > 0:
+                pos -= 1
+                f.seek(pos, os.SEEK_SET)
+                if f.read(1) == ']':
+                    break
+            f.seek(pos - 1, os.SEEK_SET)
+            f.write(f'"{word}",\n]')
     except:
         pass
 
