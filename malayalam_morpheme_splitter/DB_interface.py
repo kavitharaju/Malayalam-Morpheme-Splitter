@@ -30,20 +30,21 @@ def find_morph(word):
 
 
 
-def morph_analysis(word):
-    word = re.findall(r'[\u0080-\uFFFF]+|\w+', word)
-    analysis = []
-    for wrd in word:
-        if wrd == '':
-            pass
-        else:
-            if wrd in root_word_lookup:
-                wrd_analysis = [wrd]
-            else:
-                temp = find_morph(wrd)
-                wrd_analysis = temp
-            analysis.append(wrd_analysis)
-    return analysis
+def morph_analysis(sentence):
+    words = re.findall(r'[\u0080-\uFFFF]+|\w+', sentence)
+    analyzed_words = []
+    for word in words:
+        analyzed_word = []
+        root = word
+        while True:
+            if root in root_word_lookup:
+                analyzed_word.insert(0, root)
+                break
+            temp = find_morph(root)
+            root = temp[0]
+            analyzed_word.insert(0, temp[1]) 
+        analyzed_words.append(analyzed_word)
+    return analyzed_words
 
 
 
