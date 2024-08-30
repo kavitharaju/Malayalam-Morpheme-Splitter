@@ -5,13 +5,13 @@ and managing database entries for examples and root_word_lookup.
 """
 import re
 import os
-from data.morph_examples import examples
-from data.malayalam_words import root_word_lookup
+from malayalam_morpheme_splitter.data.morph_examples import examples
+from malayalam_morpheme_splitter.data.malayalam_words import root_word_lookup
+
 
 def read_all_examples():
     """Returns the entire examples dictionary."""
     return examples
-
 
 
 def find_morph(word):
@@ -26,7 +26,7 @@ def find_morph(word):
     """
     if not word:
         return [word, '']
-    for w in examples:
+    for w in examples.items():
         if re.match(f'.*{word}$', w):
             suffix = examples[w][1]
             index = len(w) - len(word)
@@ -82,12 +82,12 @@ def db_entry(inp):
         ValueError: If the entry would create redundancy.
     """
     for word, new_answer in inp.items():
-        entries = ''
+        if not isinstance(new_answer, list):
+            raise ValueError("Invalid format: new_answer must be a list")
         analysed_word = find_morph(word)
         if new_answer == analysed_word and word in examples:
             raise ValueError('This entry would create redundancy')
         examples[word] = new_answer
-        entries += f"'{word}': {new_answer},\n"
         try:
             with open('data/morph_examples.py', 'r+', encoding='utf-8') as db:
                 db.seek(0, os.SEEK_END)
@@ -98,11 +98,11 @@ def db_entry(inp):
                     if db.read(1) == '}':
                         break
                 db.seek(pos - 1, os.SEEK_SET)
-                db.write(entries)
+                for word, new_answer in inp.items():
+                    db.write(f"'{word}' : {new_answer},")
                 db.write("\n}")
         except:
             pass
-
 
 
 def root_word_entry(word):
@@ -115,6 +115,8 @@ def root_word_entry(word):
     Raises:
         ValueError: If the entry would create redundancy.
     """
+    if not word:
+        raise ValueError("Invalid entry")
     if word in root_word_lookup:
         raise ValueError('This entry would create redundancy')
     root_word_lookup.append(word)
