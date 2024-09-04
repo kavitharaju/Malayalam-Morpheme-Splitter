@@ -17,12 +17,12 @@ class PostInstallCommand(install):
         if os.path.exists(pycache_dir):
             shutil.rmtree(pycache_dir)
             print(f"Removed existing __pycache__ from {mms_dir}")
-        
+
         data_dir = os.path.join(os.path.dirname(__file__), 'malayalam_morpheme_splitter', 'data')
 
         shutil.copy(os.path.join(data_dir, 'morph_examples.py'), mms_dir)
         shutil.copy(os.path.join(data_dir, 'malayalam_words.py'), mms_dir)
-        
+
         super().run()
 
 setup(
