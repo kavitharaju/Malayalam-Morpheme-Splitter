@@ -16,7 +16,7 @@ To install malayalam_morpheme_splitter, you can use pip:
 import malayalam_morpheme_splitter as mms
 
 word_list = mms.morph_analysis('കരുതലിൻ്റെ') # ['കരുതൽ', 'ഇൻ്റെ']
-word_list1 = mms.morph_analysis('ആനയെ കാണാൻ വനത്തിലേക്ക് പോവുക') # [['ആന', 'എ'], ['കാണാൻ'], ['വനത്തിൽ', 'ഏക്ക്'], ['പോവുക']]
+word_list1 = mms.morph_analysis('ആനയെ കാണാൻ വനത്തിലേക്ക് പോവുക') # [['ആന', 'എ'], ['കാണാൻ'], ['വനം', 'ഇൽ', 'ഏക്ക്'], ['പോവുക']]
 
 mms.read_all_examples() # returns all the examples in the database
 
