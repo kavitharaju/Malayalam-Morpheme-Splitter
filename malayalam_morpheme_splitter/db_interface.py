@@ -50,7 +50,7 @@ def find_morph(word):
         word = word[1:]
         morph_list = find_morph(word)
         return [pre_part + morph_list[0]] + morph_list[1:]
-    return [word]
+    return [word, '']
 
 def morph_analysis(sentence):
     """
@@ -66,13 +66,15 @@ def morph_analysis(sentence):
     analyzed_words = []
     for word in words:
         analyzed_word = []
-        root = word
-        while True:
-            if root in root_word_lookup_module.root_word_lookup:
-                analyzed_word.insert(0, root)
+        root = ''
+        while word != root:
+            root = word
+            if word in root_word_lookup_module.root_word_lookup:
+                analyzed_word.insert(0, word)
                 break
-            temp = find_morph(root)
-            root = temp[0]
+            temp = find_morph(word)
+            word = temp[0]
+            print(word)
             analyzed_word.insert(0, temp[1])
         analyzed_words.append(analyzed_word)
     return analyzed_words
