@@ -25,7 +25,6 @@ def read_all_examples():
     """Returns the entire examples dictionary."""
     return examples_module.examples
 
-
 def find_morph(word):
     """
     Finds the morphological components of a word.
@@ -53,8 +52,6 @@ def find_morph(word):
         return [pre_part + morph_list[0]] + morph_list[1:]
     return [word]
 
-
-
 def morph_analysis(sentence):
     """
     Performs morphological analysis on a given word.
@@ -79,9 +76,6 @@ def morph_analysis(sentence):
             analyzed_word.insert(0, temp[1])
         analyzed_words.append(analyzed_word)
     return analyzed_words
-
-
-
 
 def db_entry(inp):
     """
@@ -127,7 +121,6 @@ def db_entry(inp):
                                   f"{examples_path}") from e
         except IOError as e:
             raise IOError(f"Error writing to examples file: {e}") from e
-
 
 def root_word_entry(word):
     """

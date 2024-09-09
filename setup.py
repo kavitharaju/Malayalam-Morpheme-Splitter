@@ -1,8 +1,29 @@
+import os
+import shutil
 from setuptools import setup, find_packages
+from setuptools.command.install import install
 from pathlib import Path
 
 this_directory = Path(__file__).parent
 long_description = (this_directory / "Readme.md").read_text(encoding='utf-8')
+
+class PostInstallCommand(install):
+    """Post-installation for installation mode."""
+    def run(self):
+        mms_dir = os.path.expanduser('~/.mms_data')
+        os.makedirs(mms_dir, exist_ok=True)
+
+        pycache_dir = os.path.join(mms_dir, '__pycache__')
+        if os.path.exists(pycache_dir):
+            shutil.rmtree(pycache_dir)
+            print(f"Removed existing __pycache__ from {mms_dir}")
+
+        data_dir = os.path.join(os.path.dirname(__file__), 'malayalam_morpheme_splitter', 'data')
+
+        shutil.copy(os.path.join(data_dir, 'morph_examples.py'), mms_dir)
+        shutil.copy(os.path.join(data_dir, 'malayalam_words.py'), mms_dir)
+
+        super().run()
 
 setup(
     name='malayalam_morpheme_splitter',
@@ -20,12 +41,14 @@ setup(
     },
     author='BCS Team',
     author_email='Kavitha.Raju@bridgeconn.com',
-    description='An example based approach at seperating suffixes from Malayalam.',
-
+    description='An example based approach at separating suffixes from Malayalam.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     license='MIT',
-     project_urls={
-           'Source Repository': 'https://github.com/kavitharaju/Malayalam-Morpheme-Splitter' 
-    }
-    )
+    project_urls={
+        'Source Repository': 'https://github.com/kavitharaju/Malayalam-Morpheme-Splitter' 
+    },
+    cmdclass={
+        'install': PostInstallCommand,
+    },
+)
