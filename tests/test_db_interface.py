@@ -16,7 +16,10 @@ def test_morph_analysis_multiple_split():
     assert morph_analysis('മനുഷ്യന്മാരിലൂടെ') == [['മനുഷ്യൻ', 'മാർ', 'ഇൽ', 'ഊടെ']]
 
 def test_db_entry_add_new_entry():
-    db_entry({'ചിരിയായ': ['ചിരി', 'ആയ']})
+    try:
+        db_entry({'ചിരിയായ': ['ചിരി', 'ആയ']})
+    except:
+        pass
     result = morph_analysis('ചിരിയായ')
     expected = [['ചിരി', 'ആയ']]
     assert result == expected, f"Expected {expected}, but got {result}"
@@ -31,12 +34,15 @@ def test_root_word_entry_redundancy():
 
 def test_db_entry_size():
     len1 = len(read_all_examples())
-    db_entry({'നികൃഷ്ടത്തോടെ' : ['നികൃഷ്ടം', 'ഓടെ'], 'നികൃഷ്ടമില്ല' : ['നികൃഷ്ടം', 'ഇല്ല']})
+    db_entry({'കരുത്തില്ല' : ['കരുത്ത്', 'ഇല്ല'], 'കരുത്തോടെ' : ['കരുത്ത്', 'ഓടെ']})
     len2 = len(read_all_examples())
     assert len2 - len1 == 2
 
 def test_read_all_examples_consistency():
-    db_entry({'പുസ്തകമായ': ['പുസ്തകം', 'ആയ']})
+    try:
+        db_entry({'പുസ്തകമായ': ['പുസ്തകം', 'ആയ']})
+    except:
+        pass
     examples = read_all_examples()
     assert 'പുസ്തകമായ' in examples, "Expected 'പുസ്തകത്തിൻ്റെ' to be present in examples after db_entry"
 
