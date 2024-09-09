@@ -74,7 +74,6 @@ def morph_analysis(sentence):
                 break
             temp = find_morph(word)
             word = temp[0]
-            print(word)
             analyzed_word.insert(0, temp[1])
         analyzed_words.append(analyzed_word)
     return analyzed_words
