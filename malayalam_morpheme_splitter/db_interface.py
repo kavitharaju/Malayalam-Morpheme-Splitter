@@ -36,21 +36,22 @@ def find_morph(word):
         list: A list containing the root word and its suffix.
     """
     if not word:
-        return [word, '']
+        return [word]
     for w in examples_module.examples.keys():
         if re.match(f'.*{word}$', w):
-            suffix = examples_module.examples[w][1]
+            if len(examples_module.examples[w]) > 1:
+                suffix = examples_module.examples[w][1]  # Take the second element
+            else:
+                suffix = None
             index = len(w) - len(word)
             word = examples_module.examples[w][0][index:]
-            if suffix == '-':
-                return [word, ""]
             return [word, suffix]
     if len(word) > 1:
         pre_part = word[0]
         word = word[1:]
         morph_list = find_morph(word)
         return [pre_part + morph_list[0]] + morph_list[1:]
-    return [word, '']
+    return [word, None]
 
 def morph_analysis(sentence):
     """
@@ -74,7 +75,10 @@ def morph_analysis(sentence):
                 break
             temp = find_morph(word)
             word = temp[0]
-            analyzed_word.insert(0, temp[1])
+            if temp[1]:
+                analyzed_word.insert(0, temp[1])
+        if not analyzed_word or analyzed_word[0] != word:
+            analyzed_word.insert(0, word)
         analyzed_words.append(analyzed_word)
     return analyzed_words
 
