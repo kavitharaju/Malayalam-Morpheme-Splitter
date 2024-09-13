@@ -36,6 +36,7 @@ def find_morph(word):
         list: A list containing the root word and its suffix.
     """
     if not word:
+
         return [word]
     for w in examples_module.examples.keys():
         if re.match(f'.*{word}$', w):
