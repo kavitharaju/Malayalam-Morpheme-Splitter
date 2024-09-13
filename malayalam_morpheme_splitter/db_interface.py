@@ -36,21 +36,23 @@ def find_morph(word):
         list: A list containing the root word and its suffix.
     """
     if not word:
-        return [word, '']
+
+        return [word]
     for w in examples_module.examples.keys():
         if re.match(f'.*{word}$', w):
-            suffix = examples_module.examples[w][1]
+            if len(examples_module.examples[w]) > 1:
+                suffix = examples_module.examples[w][1]
+            else:
+                suffix = None
             index = len(w) - len(word)
             word = examples_module.examples[w][0][index:]
-            if suffix == '-':
-                return [word, ""]
             return [word, suffix]
     if len(word) > 1:
         pre_part = word[0]
         word = word[1:]
         morph_list = find_morph(word)
         return [pre_part + morph_list[0]] + morph_list[1:]
-    return [word]
+    return [word, None]
 
 def morph_analysis(sentence):
     """
@@ -66,14 +68,18 @@ def morph_analysis(sentence):
     analyzed_words = []
     for word in words:
         analyzed_word = []
-        root = word
-        while True:
-            if root in root_word_lookup_module.root_word_lookup:
-                analyzed_word.insert(0, root)
+        root = ''
+        while word != root:
+            root = word
+            if word in root_word_lookup_module.root_word_lookup:
+                analyzed_word.insert(0, word)
                 break
-            temp = find_morph(root)
-            root = temp[0]
-            analyzed_word.insert(0, temp[1])
+            temp = find_morph(word)
+            word = temp[0]
+            if temp[1]:
+                analyzed_word.insert(0, temp[1])
+        if not analyzed_word or analyzed_word[0] != word:
+            analyzed_word.insert(0, word)
         analyzed_words.append(analyzed_word)
     return analyzed_words
 
@@ -141,7 +147,7 @@ def root_word_entry(word):
         raise ValueError('This entry would create redundancy')
     root_word_lookup_module.root_word_lookup.append(word)
     try:
-        with open('root_word_lookup_path', 'r+', encoding='utf-8') as f:
+        with open(root_word_lookup_path, 'r+', encoding='utf-8') as f:
             f.seek(0, os.SEEK_END)
             pos = f.tell()
             while pos > 0:
