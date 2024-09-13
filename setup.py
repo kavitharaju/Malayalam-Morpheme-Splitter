@@ -27,7 +27,7 @@ class PostInstallCommand(install):
 
 setup(
     name='malayalam_morpheme_splitter',
-    version='1.0.2',
+    version='1.0.0-beta.1',
     packages=find_packages(),
     install_requires=[],  
     entry_points={
@@ -40,7 +40,7 @@ setup(
         'malayalam_morpheme_splitter': ['data/morph_examples.py', 'data/malayalam_words.py'],
     },
     author='BCS Team',
-    author_email='Kavitha.Raju@bridgeconn.com',
+    author_email='Kavitha.Raju@bridgeconn.com, gladysann1307@gmail.com',
     description='An example based approach at separating suffixes from Malayalam.',
     long_description=long_description,
     long_description_content_type='text/markdown',

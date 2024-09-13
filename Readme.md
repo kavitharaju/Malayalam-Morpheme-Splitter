@@ -8,7 +8,7 @@ malayalam_morpheme_splitter is a Python package designed to split suffixes from 
 ## Installation
 To install malayalam_morpheme_splitter, you can use pip:
 
-    pip install -i https://test.pypi.org/simple/ malayalam-morpheme-splitter==1.0.2
+    pip install malayalam-morpheme-splitter
 
 ## Usage
 
@@ -26,13 +26,16 @@ mms.root_word_entry('നികൃഷ്ടം') # add a new root word to DB
 ```
 
 ## Functions
-read_all_examples() : Reads all the examples from the DB and returns them as a dictionary.
 
-morph_analysis(sentence) : This function takes a string as input and returns a list containing segmentations.
+* morph_analysis(sentence) : This function takes a string as input and returns a list containing segmentations.
 
-db_entry(inp) : This function takes a dictionary as input and adds it to the DB.
+Users can control or change the behaviour of the morpheme splitter. If you notice a certain kind of word is not split correctly, or a whord that should not be split is split, those can be fixed by adding data to the system userself:
 
-root_word_entry(word) : This function take a string as input and adds it to DB.
+* read_all_examples() : Reads all the examples from the DB and returns them as a dictionary. This can be used to examine the current rules.
+
+* db_entry(inp) : This function takes a dictionary as input and adds it to the DB. Adding a new example will let the system learn that pattern and treat similar words in the way it i split in the given example.
+
+* root_word_entry(word) : This function take a string as input and adds it to DB. A word which you think shpuld not be split, can be added here.
 
 
 
