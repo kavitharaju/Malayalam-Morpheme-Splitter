@@ -40,7 +40,7 @@ def find_morph(word):
     for w in examples_module.examples.keys():
         if re.match(f'.*{word}$', w):
             if len(examples_module.examples[w]) > 1:
-                suffix = examples_module.examples[w][1]  # Take the second element
+                suffix = examples_module.examples[w][1]
             else:
                 suffix = None
             index = len(w) - len(word)
@@ -146,7 +146,7 @@ def root_word_entry(word):
         raise ValueError('This entry would create redundancy')
     root_word_lookup_module.root_word_lookup.append(word)
     try:
-        with open('root_word_lookup_path', 'r+', encoding='utf-8') as f:
+        with open(root_word_lookup_path, 'r+', encoding='utf-8') as f:
             f.seek(0, os.SEEK_END)
             pos = f.tell()
             while pos > 0:
