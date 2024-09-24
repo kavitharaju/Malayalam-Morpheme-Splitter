@@ -5,9 +5,21 @@ and managing database entries for examples and root_word_lookup.
 """
 import re
 import os
+import shutil
 import importlib.util
 
 data_dir = os.path.join(os.path.expanduser("~"), ".mms_data")
+def check_for_data_dir():
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir, exist_ok=True)
+        pkg_data_dir = os.path.join(os.path.dirname(__file__), 'data')
+
+        shutil.copy(os.path.join(pkg_data_dir, 'morph_examples.py'), data_dir)
+        shutil.copy(os.path.join(pkg_data_dir, 'malayalam_words.py'), data_dir)
+
+check_for_data_dir()
+
+
 examples_path = os.path.join(data_dir, "morph_examples.py")
 root_word_lookup_path = os.path.join(data_dir, "malayalam_words.py")
 
