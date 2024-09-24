@@ -41,7 +41,7 @@ setup(
     },
     author='BCS Team',
     author_email='Kavitha.Raju@bridgeconn.com, gladysann1307@gmail.com',
-    description='An example based approach at separating suffixes from Malayalam.',
+    description='An example based approach at separating suffixes in Malayalam text.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     license='MIT',
